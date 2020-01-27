@@ -21,15 +21,19 @@ app.use(function(req, res, next) {
   }
 });
 
+let users = [];
 io.on('connection', (socket) => {
-  // socket.removeAllListeners();
-  console.log('a user connected');
+  console.log('a user connected', socket.id);
+  io.emit('my broadcast', `server: Hi, Angular`);
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    users.push(socket.id);
   });
   socket.on('my message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('my broadcast', `server: Hi Angular`);
+    let index = users.indexOf(socket.id)
+    console.log("disconnect", socket.id, index)
+    console.log("users", users);
+    users.splice(index,1);
   });
 });
 
